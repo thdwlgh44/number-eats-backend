@@ -1,0 +1,14 @@
+#1. Setup
+npm i
+npm run start:dev
+gitignore
+
+#2. GraphQL
+npm i @nestjs/graphql graphql-tools graphql apollo-server-express
+=> !! 2023 5월 기준 exporess와 apollo를 사용하려면 다음 패키지를 설치
+=> npm i @nestjs/graphql@^9 graphql@^15 apollo-server-express@^3
+- entity: database model
+
+#3. database
+- TS와 nest.js에서 ORM을 사용: 객체-관계 매핑, sql문이 아닌 코드로 데이터베이스 통신
+- 5432 / 1234
