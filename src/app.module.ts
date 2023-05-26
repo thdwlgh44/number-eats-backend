@@ -6,6 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
+import { Restaurant } from './restaurants/entities/restaurant.entity';
 
 @Module({
   imports: [
@@ -29,8 +30,9 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: true,
-      logging: true,
+      synchronize: process.env.NODE_ENV !== 'prod', //DB의 구성을 자동으로 바꾸어준다. (migration)
+      logging: process.env.NODE_ENV !== 'prod', //prod 환경에서만 모든 DB 로그들을 확인하도록 한다.
+      entities: [Restaurant],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

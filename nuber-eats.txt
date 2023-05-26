@@ -12,3 +12,32 @@ npm i @nestjs/graphql graphql-tools graphql apollo-server-express
 #3. database
 - TS와 nest.js에서 ORM을 사용: 객체-관계 매핑, sql문이 아닌 코드로 데이터베이스 통신
 - 5432 / 1234
+- database connect: npm install --save @nestjs/typeorm typeorm pg
+- npm i --save @nestjs/config: dotenv 최상위
+- npm i cross-env
+- ignoreEnvFile: server에 deploy 할 때 환경변수 파일을 사용하지 않는다.
+- joi: JS용 환경변수 유효성 검사 라이브러리
+npm i joi
+
+#4. TypeORM
+- @Entity: TypeORM이 DB에 저장
+- Active Record: DB와 상호작용하기 위한 패턴
+extends BaseEntity
+- Data Mapper: Nest.js+TypeORM에서 사용, getRepository() 사용해서 어디든 접근 가능하다는 장점
+test & simulate
+- Recap
+app.module - TypeOrmModule - entity(Restaurant) => DB
+restaurants.module - TypeOrmModule.forFeature([]): 특정 feature import
+resolver - RestaurantService import 
+service - @InjectRepository(entity): repository의 옵션들을 사용할 수 있게 된다.
+- create Restaurants
+- dto와 entity가 통합되어서 생성되지 않는 문제점을 어떻게 해결할까?
+entity파일 하나로 모두 만들어보자. => Mappedtypes
+paretType인 Restaurant가 ObjectType이고 childType이 InputType으로 서로 다르기 때문에 InputType을 2번째 args로 전달한다.
+
+#5.
+#6.
+#7.
+#8.
+#9.
+#10.
