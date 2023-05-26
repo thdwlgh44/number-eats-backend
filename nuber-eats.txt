@@ -34,10 +34,49 @@ service - @InjectRepository(entity): repository의 옵션들을 사용할 수 �
 - dto와 entity가 통합되어서 생성되지 않는 문제점을 어떻게 해결할까?
 entity파일 하나로 모두 만들어보자. => Mappedtypes
 paretType인 Restaurant가 ObjectType이고 childType이 InputType으로 서로 다르기 때문에 InputType을 2번째 args로 전달한다.
+- update Restaurant
+resolver - dto - service
 
-#5.
-#6.
+#5. User
+- module
+nest g mo users
+nest g mo common
+- entity
+id
+createdAt
+updatedAt
+email
+password
+rold(client|owner|delivery)
+- CRUD
+create Account
+Log In
+See Profile
+Edit Profile
+- enum: 열거
+- array or object return error
+- hash: listener - entity에 무슨 일이 생길 때 실행
+npm i bcrypt
+npm i @types/bcrypt --dev-only
+
+#6. authentication
+npm i jsonwebtoken
+npm i @types/jsonwebtoken --only-dev
+JWT: token에 들어있는 정보를 누구나 알 수 있으므로 중요한 정보에는 적합하지 않음. 우리만이 유효한 인증을 할 수 있도록 해준다.
+nest g mo jwt
+static module: 어떠한 설정도 되어있지 않음
+dynamic => static
+nest g s jwt
+client(Request) -> Middleware -> Route Handler
+
+
 #7.
+
+
 #8.
+
+
 #9.
+
+
 #10.
