@@ -72,6 +72,13 @@ nest g mo auth
 authentication: token으로 identity 확인
 authorization: user가 어떤 일을 하기 전에 권한을 가지고 있는지 확인하는 과정
 
+- authentication 과정
+1) header에 token을 보낸다. http기술을 쓰기 위해 middleware를 만든다.
+2) token을 decrpt, verify 하는 middleware을 거친다.
+3) request object에 user를 추가한다. => r o는 graphql context 안으로 들어가게 되고 guard가 g c를 찾아 user 존재유무에 따라 true, false를 리턴한다.
+
+- update가 undefined를 보내는 것을 방지하기 위하여 picType 사용하도록 함
+
 #7.
 
 
@@ -82,3 +89,19 @@ authorization: user가 어떤 일을 하기 전에 권한을 가지고 있는지
 
 
 #10.
+
+#15. react router v6
+recommend: 5.3.4 ver
+npm i react-router-dom@5.3.4
+강의 다 끝나고 다시 돌아오는 섹션
+npx create-react-app nuber-eats-frontend --template=typescript
+TailwindCSS
+- 정형화된 룩, 형식이 없고 마치 오리지널 css로 만든 것 같음
+- prod를 위한 build를 할 대 쓰지 않는 클래스들은 뺄 수 있다.
+- npm install tailwindcss
+- node.js 12이상에서만 적용 가능
+- npm install tailwindcss pstcss autoprefixer: 클래스 이름에 접두사 호환성을 추가
+
+Apollo Setup
+- 
+React Router Dom
