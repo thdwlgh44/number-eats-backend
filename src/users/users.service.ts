@@ -9,12 +9,14 @@ import { LoginInput } from "./dtos/login.dto";
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '../jwt/jwt.service';
 import { EditProfileInput } from './dtos/edit-profile.dto';
+import { Verification } from "./entities/verification.entity";
 
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User) private readonly users: Repository<User>,
+        @InjectRepository(Verification) private readonly verifications: Repository<Verification>,
         // private readonly config: ConfigService,
         private readonly jwtService: JwtService,
     ) {}
@@ -27,7 +29,11 @@ export class UsersService {
             if(exists) {
                 return {ok:false, error: "There is a user with that email already"};
             }
-            await this.users.save(this.users.create({email, password, role})); //entity를 생성할 뿐 DB에까지 저장되지는 않는다.
+            const user = await this.users.save(this.users.create({email, password, role})); //entity를 생성할 뿐 DB에까지 저장되지는 않는다.
+            await this.verifications.save(this.verifications.create ({
+                    user,
+                }),
+            );
             return {ok:true};
         } catch (e) {
             // make error
@@ -41,7 +47,7 @@ export class UsersService {
         //check if the password is correct
         //make a JWT and give it to the user
         try {
-            const user = await this.users.findOne({ where: {email} });
+            const user = await this.users.findOne({ where: {email}, select:["id","password"]} );
             if(!user) {
                 return {
                     ok: false,
@@ -76,11 +82,30 @@ export class UsersService {
         const user = await this.users.findOne({where: {id: userId}});
         if(email) {
             user.email = email
+            user.verified = false;
+            await this.verifications.save(this.verifications.create({ user }));
         }
         if(password) {
             user.password = password;
         }
         return this.users.save(user) //query만 보내는 것이지 entity를 업데이트하진 않는다.
         //save or update
+    }
+    
+    async verifyEmail(code: string): Promise<boolean> {
+        try {
+        const verification = await this.verifications.findOne({
+            where: { code },
+            relations: ['user'],
+        });
+        if(verification) {
+                verification.user.verified = true
+                this.users.save(verification.user); //user정보를 한 번 더 update하면서 hash가 또 일어남
+                return true;
+        }
+            throw new Error();
+        } catch(e) {
+            return false;
+        }
     }
 }

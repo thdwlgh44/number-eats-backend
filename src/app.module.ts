@@ -14,6 +14,7 @@ import { JoinAttribute } from 'typeorm/query-builder/JoinAttribute';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
+import { Verification } from './users/entities/verification.entity';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod', //DB의 구성을 자동으로 바꾸어준다. (migration)
       logging: process.env.NODE_ENV !== 'prod', //prod 환경에서만 모든 DB 로그들을 확인하도록 한다.
-      entities: [User],
+      entities: [User, Verification],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
