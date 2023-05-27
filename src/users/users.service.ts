@@ -8,6 +8,7 @@ import { error } from "console";
 import { LoginInput } from "./dtos/login.dto";
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '../jwt/jwt.service';
+import { EditProfileInput } from './dtos/edit-profile.dto';
 
 
 @Injectable()
@@ -65,5 +66,21 @@ export class UsersService {
                 error,
             };
         }
+    }
+
+    async findById(id: number): Promise<User> {
+        return this.users.findOne({ where: {id} });
+    }
+
+    async editProfile(userId: number, {email, password}: EditProfileInput): Promise<User> {
+        const user = await this.users.findOne({where: {id: userId}});
+        if(email) {
+            user.email = email
+        }
+        if(password) {
+            user.password = password;
+        }
+        return this.users.save(user) //query만 보내는 것이지 entity를 업데이트하진 않는다.
+        //save or update
     }
 }

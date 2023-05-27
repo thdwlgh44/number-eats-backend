@@ -68,7 +68,9 @@ static module: 어떠한 설정도 되어있지 않음
 dynamic => static
 nest g s jwt
 client(Request) -> Middleware -> Route Handler
-
+nest g mo auth
+authentication: token으로 identity 확인
+authorization: user가 어떤 일을 하기 전에 권한을 가지고 있는지 확인하는 과정
 
 #7.
 

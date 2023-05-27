@@ -1,5 +1,5 @@
 import { CoreEntity } from "src/common/entities/core.entity";
-import { BeforeInsert, Column, Entity } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import { InputType, ObjectType, Field, registerEnumType } from "@nestjs/graphql";
 import { IsEmail, IsEnum } from 'class-validator';
 import * as bcrypt from 'bcrypt';
@@ -33,6 +33,7 @@ export class User extends CoreEntity {
     role: UserRole;
 
     @BeforeInsert()
+    @BeforeUpdate() //password 저장 시 항상 해시화 할 수 있도록 한다. update()에서 이것을 호출하지 못하는 이유는?
     async hashPassword() : Promise<void> { //entity를 저장하기 전 password를 hash로 변환하고 이후 저장
         try {
             this.password = await bcrypt.hash(this.password, 10);

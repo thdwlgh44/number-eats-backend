@@ -1,20 +1,20 @@
-import { Mutation, Args, Query, Resolver } from "@nestjs/graphql";
+import { Mutation, Args, Query, Resolver, Context } from "@nestjs/graphql";
 import { User } from "./entities/user.entity";
 import { UsersService } from './users.service';
 import { CreateAccountInput, CreateAccountOutput } from "./dtos/create-account.dto";
 import { error } from "console";
 import { LoginInput, LoginOutput } from "./dtos/login.dto";
+import { UseGuards } from "@nestjs/common";
+import { AuthGuard } from "src/auth/auth.guard";
+import { AuthUser } from "src/auth/auth-user.decorator";
+import { UserProfileInput, UserProfileOutput } from "./dtos/user-profile.dto";
+import { EditProfileInput, EditProfileOut } from "./dtos/edit-profile.dto";
 
 @Resolver(of => User)
 export class UsersResolver {
     constructor(
         private readonly usersService: UsersService
     ) {}
-
-    @Query(returns => Boolean)
-    hi() {
-        return true;
-    }
 
     @Mutation(returns => CreateAccountOutput)
     async createAccount(@Args('input') createAccountInput: CreateAccountInput,): Promise<CreateAccountOutput> {
@@ -41,9 +41,56 @@ export class UsersResolver {
     }
 
     @Query(returns => User)
-    me() {
-        
+    @UseGuards(AuthGuard)
+    me(@AuthUser() authUser: User) {
+        console.log(authUser);
+        return authUser;
     }
+
+    @UseGuards(AuthGuard)
+    @Query(returns => UserProfileOutput)
+    async userProfile(@Args() userProfileInput: UserProfileInput,): Promise<UserProfileOutput> {
+        try {
+            const user = await this.usersService.findById(userProfileInput.userId);
+            if (!user) {
+                throw Error();
+            }
+            return {
+                ok: true,
+                user,
+            };
+        } catch (e) {
+            return {
+                error: "User Not Found",
+                ok: false,
+            };
+        }
+    }
+
+    @UseGuards(AuthGuard)
+    @Mutation(returns => EditProfileOut)
+    async editProfile(
+        @AuthUser() authUser: User,
+        @Args('input') editProfileInput: EditProfileInput): Promise<EditProfileOut> {
+        try {
+            await this.usersService.editProfile(authUser.id, editProfileInput);
+            return {
+                ok: true,
+            };
+        } catch (error) {
+            return {
+                ok: false,
+                error,
+            };
+        }
+    }
+    // me(@Context() context) {
+    //     if(!context.user) {
+    //         return;
+    //     } else {
+    //         return context.user;
+    //     }
+    // }
 
 }
 
