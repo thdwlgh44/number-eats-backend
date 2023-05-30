@@ -15,6 +15,7 @@ import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Verification } from './users/entities/verification.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { Verification } from './users/entities/verification.entity';
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === "dev" ? ".env.dev" : ".env.test",
       ignoreEnvFile: process.env.NODE_ENV === 'prod', //prod 환경일 때 모듈이 환경변수 파일을 무시하게 된다.
-      validationSchema: Joi.object({
+      validationSchema: Joi.object({ //스키마 유효성 검사
         NODE_ENV: Joi.string().valid('dev', 'prod').required(),
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.string().required(),
@@ -30,6 +31,9 @@ import { Verification } from './users/entities/verification.entity';
         DB_PASSWORD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         PRIVATE_KEY: Joi.string().required(), //token을 지정하기 위한 private key
+        MAILGUN_API_KEY: Joi.string().required(),
+        MAILGUN_DOMAIN_NAME: Joi.string().required(),
+        MAILGUN_FROM_EMAIL: Joi.string().required(),
       }),
     }), 
     TypeOrmModule.forRoot({
@@ -51,7 +55,12 @@ import { Verification } from './users/entities/verification.entity';
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
     }),
-    UsersModule,  
+    MailModule.forRoot({
+      apiKey:process.env.MAILGUN_API_KEY,
+      fromEmail:process.env.MAILGUN_DOMAIN_NAME,
+      domain:process.env.MAILGUN_FROM_EMAIL,
+    }),  
+    UsersModule,
   ],  
   controllers: [],
   providers: [],

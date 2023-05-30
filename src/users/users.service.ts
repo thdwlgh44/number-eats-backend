@@ -118,7 +118,8 @@ export class UsersService {
         });
         if(verification) {
                 verification.user.verified = true
-                this.users.save(verification.user); //user정보를 한 번 더 update하면서 hash가 또 일어남
+                await this.users.save(verification.user); //user정보를 한 번 더 update하면서 hash가 또 일어남
+                await this.verifications.delete(verification.id);
                 return { ok: true };
             }
             return { ok: false, error: 'Verification not found.'};
