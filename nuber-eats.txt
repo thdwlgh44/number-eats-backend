@@ -100,8 +100,16 @@ TailwindCSS
 - prod를 위한 build를 할 대 쓰지 않는 클래스들은 뺄 수 있다.
 - npm install tailwindcss
 - node.js 12이상에서만 적용 가능
-- npm install tailwindcss pstcss autoprefixer: 클래스 이름에 접두사 호환성을 추가
+- npm i tailwindcss postcss autoprefixer: 클래스 이름에 접두사 호환성을 추가
+- postcss config file: tailwind를 일반 css로 빌드하기 위한 postcss config file 생성
+- Create configuration file: npx tailwindcss init
+- npm run tailwind:build
+- npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
+- npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/styles.css --watch
 
 Apollo Setup
-- 
+- npm install @apollo/client graphql
+
 React Router Dom
+- npm install react-router-dom
+- login / logout
