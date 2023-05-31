@@ -12,15 +12,18 @@ import { EditProfileInput, EditProfileOut } from './dtos/edit-profile.dto';
 import { Verification } from "./entities/verification.entity";
 import { UserProfileOutput } from "./dtos/user-profile.dto";
 import { VerifyEmailOutput } from "./dtos/verify-email.dto";
+import { MailService } from "src/mail/mail.service";
 
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User) private readonly users: Repository<User>,
-        @InjectRepository(Verification) private readonly verifications: Repository<Verification>,
+        @InjectRepository(Verification) 
+        private readonly verifications: Repository<Verification>,
         // private readonly config: ConfigService,
         private readonly jwtService: JwtService,
+        private readonly mailService: MailService,
     ) {}
 
     // check new user
@@ -32,10 +35,11 @@ export class UsersService {
                 return {ok:false, error: "There is a user with that email already"};
             }
             const user = await this.users.save(this.users.create({email, password, role})); //entity를 생성할 뿐 DB에까지 저장되지는 않는다.
-            await this.verifications.save(this.verifications.create ({
+            const verification = await this.verifications.save(this.verifications.create ({
                     user,
                 }),
             );
+            this.mailService.sendVerificationEmail(user.email, verification.code);
             return {ok:true};
         } catch (e) {
             // make error
@@ -96,7 +100,8 @@ export class UsersService {
             if(email) {
                 user.email = email
                 user.verified = false;
-                await this.verifications.save(this.verifications.create({ user }));
+                const verification = await this.verifications.save(this.verifications.create({ user }));
+                this.mailService.sendVerificationEmail(user.email, verification.code);
             }
             if(password) {
                 user.password = password;
