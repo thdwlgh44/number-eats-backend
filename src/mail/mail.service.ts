@@ -1,4 +1,4 @@
-import got from 'got';
+import got from "got";
 import * as FormData from "form-data";
 import { CONFIG_OPTIONS } from "src/common/common.constants";
 import { EmailVar, MailModuleOptions } from "./mail.interfaces";
